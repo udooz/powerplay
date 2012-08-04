@@ -14,21 +14,15 @@ Syntax: `Initialize-AzureSbCredential [[-cred] <PSObject>] [<CommonParameters>]`
 
 ### Example ###
 
->`$cred = [psobject] @{`
-
-`    issuer = "owner"`
-
-        secret = "xxxxx"
-
-        ns = "mysb"
-
-        path =""
-
-    }
-
-
->`Initialize-AzureSbCredential -cred $cred`
-
+```
+$cred = [psobject] @{
+        issuer = "owner"
+		secret = "xxxxx"
+		ns = "mysb"
+		path =""
+	}
+Initialize-AzureSbCredential -cred $cred
+```
 
 ----------
 
