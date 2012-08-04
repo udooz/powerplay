@@ -6,7 +6,7 @@ A set of cmdlets targeted to assist Azure Service Bus management during the deve
 
 ## Cmdlets ##
 
-- *Import-AzureSbAssembly*.  Load Azure ServiceBus related .NET assemblies.
+- *[Import-AzureSbAssembly](/asb/01.md)*.  Load Azure ServiceBus related .NET assemblies.
 - *Initialize-AzureSbCredential*. Initialize ServiceBus access control credential.
 - *Get-AzureSbNamespaceManager*. Creates new or returns existing NamespaceManager.
 - *New-AzureSbQueue*. Creates new Windows Azure ServiceBus queue.
@@ -20,5 +20,5 @@ A set of cmdlets targeted to assist Azure Service Bus management during the deve
 Cmdlets for Windows Azure Service Bus queue related operations.
 
 ### You Contribution ###
-The Cmdlets can either be refactored or new cmdlets be added based on the developer usage.  Your feedbacks or contribution help.
+The Cmdlets can either be refactored or new cmdlets be added based on the developer usage.  Your feedbacks or contribution are highly appreciated.
 Contact: udooz at hotmail dot com.
