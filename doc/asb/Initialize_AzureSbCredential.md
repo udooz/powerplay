@@ -14,7 +14,7 @@ Syntax: `Initialize-AzureSbCredential [[-cred] <PSObject>] [<CommonParameters>]`
 
 ### Example ###
 
-```
+```powershell
 $cred = [psobject] @{
         issuer = "owner"
 		secret = "xxxxx"
