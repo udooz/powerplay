@@ -6,14 +6,14 @@ A set of cmdlets targeted to assist Azure Service Bus management during the deve
 
 ## Cmdlets ##
 
-- *[Import-AzureSbAssembly](./asb/01.md)*.  Load Azure ServiceBus related .NET assemblies.
-- *Initialize-AzureSbCredential*. Initialize ServiceBus access control credential.
-- *Get-AzureSbNamespaceManager*. Creates new or returns existing NamespaceManager.
-- *New-AzureSbQueue*. Creates new Windows Azure ServiceBus queue.
-- *Get-AzureSbQueueDesc*. Returns QueueDescription of a ServiceBus queue.
-- *Send-AzureSbMessage*. Sends a message to a ServiceBus queue.
-- *Receive-AzureSbMessage*. Receives a message (peek and lock) from a ServiceBus queue.
-- *Clear-AzureSbObjects*. Clear all script level ServiceBus related objects.
+- *[Import-AzureSbAssembly](./asb/Import_AzureSbAssembly.md)*.  Load Azure ServiceBus related .NET assemblies.
+- *[Initialize-AzureSbCredential](./asb/Initialize_AzureSbCredential.md)*. Initialize ServiceBus access control credential.
+- *[Get-AzureSbNamespaceManager](./asb/Get_AzureSbNamespaceManager.md)*. Creates new or returns existing NamespaceManager.
+- *[New-AzureSbQueue](./asb/New_AzureSbQueue.md)*. Creates new Windows Azure ServiceBus queue.
+- *[Get-AzureSbQueueDesc](./asb/Get_AzureSbQueueDesc.md)*. Returns QueueDescription of a ServiceBus queue.
+- *[Send-AzureSbMessage](./asb/Send_AzureSbMessage.md)*. Sends a message to a ServiceBus queue.
+- *[Receive-AzureSbMessage](./asb/Receive_AzureSbMessage.md)*. Receives a message (peek and lock) from a ServiceBus queue.
+- *[Clear-AzureSbObjects](./asb/Clear_AzureSbObjects.md)*. Clear all script level ServiceBus related objects.
 
 # Version History #
 ## Version 1.0 #
@@ -21,4 +21,5 @@ Cmdlets for Windows Azure Service Bus queue related operations.
 
 ### You Contribution ###
 The Cmdlets can either be refactored or new cmdlets be added based on the developer usage.  Your feedbacks or contribution are highly appreciated.
-Contact: udooz at hotmail dot com.
+
+*Contact: udooz at hotmail dot com*.
