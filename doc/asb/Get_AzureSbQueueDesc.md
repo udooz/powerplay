@@ -13,3 +13,7 @@ Syntax: `Get-AzureSbQueueDesc [-qname] <String>`
         Accept pipeline input?       false
         Accept wildcard characters?  
 ```
+
+----------
+
+[Main](../AzureServiceBus.md)
