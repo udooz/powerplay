@@ -7,9 +7,13 @@ Syntax: `Initialize-AzureSbCredential [[-cred] <PSObject>] [<CommonParameters>]`
 
 -cred <PSObject>       
         Required?                    false
+        
         Position?                    1
+        
         Default value                
+        
         Accept pipeline input?       false
+        
         Accept wildcard characters?  
 
 ### Example ###
