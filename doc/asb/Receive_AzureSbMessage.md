@@ -23,3 +23,5 @@ C:\PS>#to receive "n" number of messages from the queue
     # here n = 6
     1..6 | ForEach { $pr = Receive-AzureSbMessage -path "personq" -stubBodyObj $p; Write-Host $pr.body.Name}
 ```
+
+[Main](../AzureServiceBus.md)
