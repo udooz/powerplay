@@ -3,6 +3,6 @@ PowerPlay
 
 Assorted collection Powershell scripts - Particularly Azure
 
-- AzureServiceBus
+- [AzureServiceBus](./doc/AzureServiceBus.md)
 
-udooz
+http://udooz.net/blog

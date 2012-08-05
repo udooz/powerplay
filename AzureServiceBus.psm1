@@ -1,6 +1,7 @@
 ﻿# **************** Azure Service Bus Powershell Module *************
 # Author: M Sheik Uduman Ali
 # http://udooz.net/blog
+# udooz@hotmail.com
 # Revision: 1
 # ******************************************************************
 
