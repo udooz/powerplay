@@ -4,6 +4,8 @@ A set of cmdlets targeted to assist Azure Service Bus management during the deve
 - Avoid writing boiler plate code for Service Bus related operations such as to create NamespaceManager, QueueClient, Send and receive messages
 - To pump huge number of message to Azure Service Bus queues either from object collection or from JSON text files for testing
 
+Note: .NET 4.0 is required to use this Cmdlets
+
 ## Cmdlets ##
 
 - *[Import-AzureSbAssembly](./asb/Import_AzureSbAssembly.md)*.  Load Azure ServiceBus related .NET assemblies.
