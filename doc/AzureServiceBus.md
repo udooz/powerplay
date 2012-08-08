@@ -1,8 +1,10 @@
 # Azure Service Bus Cmdlets #
-A set of cmdlets targeted to assist Azure Service Bus management during the development or testing.
+A set of cmdlets targeted to assist Azure Service Bus management during the development and testing.
 ### Why do you need this? ###
 - Avoid writing boiler plate code for Service Bus related operations such as to create NamespaceManager, QueueClient, Send and receive messages
-- Pump huge number of message to Azure Service Bus queues either from collection or JSON text files
+- To pump huge number of message to Azure Service Bus queues either from object collection or from JSON text files for testing
+
+Note: .NET 4.0 is required to use this Cmdlets
 
 ## Cmdlets ##
 
@@ -19,7 +21,7 @@ A set of cmdlets targeted to assist Azure Service Bus management during the deve
 ## Version 1.0 #
 Cmdlets for Windows Azure Service Bus queue related operations.
 
-### You Contribution ###
-The Cmdlets can either be refactored or new cmdlets be added based on the developer usage.  Your feedbacks or contribution are highly appreciated.
+### Your Contribution ###
+Your contribution twoards refactoring the existing parts or new cmdlets are highly appreciated.
 
 *Contact: udooz at hotmail dot com*.

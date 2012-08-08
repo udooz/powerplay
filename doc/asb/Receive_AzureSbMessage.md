@@ -2,7 +2,10 @@
 
 Peek and pick up a message from the given queue.  Returns a key-value of BrokeredMessage and its Body in the key names "msg" and "body" respectively.
 
-Syntax: `Receive-AzureSbMessage [-path] <String> [[-stubBodyObj] <Object>] [-forceNewQClient]`
+Syntax: `Receive-AzureSbMessage [-path] <String> [[-stubBodyObj] <Object>] [-forceNewQClient] [-skipBodyProcess]`
+
+skipBodyProcess option helps to ignore deserialization of message body.  The output only contains "msg".
+
 
 ### Example 1 ###
 
