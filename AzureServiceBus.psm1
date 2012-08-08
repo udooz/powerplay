@@ -57,6 +57,7 @@ function Initialize-AzureSbCredential
 		[psobject]$cred
 	)
 	$script:sbCred = $cred
+	$script:sbNsmgr = $null
 }
 
 function Get-AzureSbNamespaceManager
@@ -352,6 +353,9 @@ function Receive-AzureSbMessage
 		.PARAMETER forceNewQClient
 		Instead of existing queue client, force to create new one
 		
+		.PARAMETER $skipBodyProcess
+		Skip body parsing
+		
 		.OUTPUTS
 		Returns a key-value of BrokeredMessage and its Body in the key names "msg" and "body" respectively
 		
@@ -370,7 +374,8 @@ function Receive-AzureSbMessage
 		[Parameter(Mandatory=$true)]
 		[string]$path,
 		$stubBodyObj,
-		[switch]$forceNewQClient
+		[switch]$forceNewQClient,
+		[switch]$skipBodyProcess
 	)
 	if(!$script:sbQRClient -or $forceNewQClient)
 	{
@@ -388,8 +393,12 @@ function Receive-AzureSbMessage
 	}finally {
 		if($msg) { 
 			$msg.Complete() 
-			$mi = $msg.GetType().GetMethods() | Where {$_.Name -like 'GetBody' -and ($_.GetParameters().Length -eq 0)} | Select
-			$body = $mi.MakeGenericMethod($stubBodyObj.GetType()).Invoke($msg, $null)
+			$body = $null
+			if(!$skipBodyProcess)
+			{
+				$mi = $msg.GetType().GetMethods() | Where {$_.Name -like 'GetBody' -and ($_.GetParameters().Length -eq 0)} | Select
+				$body = $mi.MakeGenericMethod($stubBodyObj.GetType()).Invoke($msg, $null)
+			}
 			return @{msg=$msg;body=$body}
 		}
 	}
