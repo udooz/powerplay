@@ -168,7 +168,7 @@ function New-AzureSbQueue
 	}
 	
 	process {
-		if(!$nsmgr.QueueExists($qname)) 
+		if(!$script:sbNsmgr.QueueExists($qname)) 
 		{
 			$qdesc = New-Object -TypeName Microsoft.ServiceBus.Messaging.QueueDescription -ArgumentList $qname	
 			$qdesc.DefaultMessageTimeToLive = $defTtl;$qdesc.DuplicateDetectionHistoryTimeWindow=$duplDetectHisTimeWindow
