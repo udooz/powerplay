@@ -389,7 +389,7 @@ function Receive-AzureSbMessage
 	try {
 		$msg = $script:sbQRClient.Receive()				
 	}catch {
-		Write-Error $Error[0]
+		Write-Error $Error
 	}finally {
 		if($msg) { 
 			$msg.Complete() 
