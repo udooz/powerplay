@@ -1,4 +1,4 @@
-﻿# **************** Azure Service Bus Powershell Module *************
+# **************** Azure Service Bus Powershell Module *************
 # Author: M Sheik Uduman Ali
 # http://udooz.net/blog
 # udooz@hotmail.com
@@ -22,7 +22,7 @@ function Import-AzureSbAssembly
 	if(!$azureSdkPath.EndsWith("\")) {$azureSdkPath = $azureSdkPath + "\"}
     $sbAssemblyName = "Microsoft.ServiceBus.dll"
     $sbAsmPath = $azureSdkPath + $sbAssemblyName
-	
+
 	if(Test-Path -Path $sbAsmPath)
 	{
 		[Reflection.Assembly]::LoadFile($sbAsmPath) | Out-Null
@@ -51,7 +51,7 @@ function Initialize-AzureSbCredential
 	}
 	Initialize-AzureSbCredential -cred $cred
 	#>
-	
+
 	param (
 		[ValidateNotNull()]
 		[psobject]$cred
@@ -74,7 +74,7 @@ function Get-AzureSbNamespaceManager
 	.EXAMPLE
 	Get-AzureSbNamespaceManager
 	#>
-	
+
 	param (
 		[switch] $forceNew
 	)
@@ -144,7 +144,7 @@ function New-AzureSbQueue
 	.OUTPUTS
 	Microsoft.ServiceBus.Messaging.QueueDescription
 	#>
-	
+
 	param (
 		[Parameter(Mandatory=$true)]
 		[string]$qname,
@@ -166,7 +166,7 @@ function New-AzureSbQueue
 		}
 		if(!$script:sbNsmgr) {Get-AzureSbNamespaceManager}
 	}
-	
+
 	process {
 		if(!$script:sbNsmgr.QueueExists($qname)) 
 		{
@@ -176,16 +176,16 @@ function New-AzureSbQueue
 			$qdesc.LockDuration = $lockDuration; $qdesc.MaxDeliveryCount=$maxDelvCount
 			$qdesc.MaxSizeInMegabytes = $maxQSize; $qdesc.RequiresDuplicateDetection=$detectDupl			
 			$qdesc.RequiresSession = $sessionRequired
-			
+
 			$rqdesc = $script:sbNsmgr.CreateQueue($qdesc)
-			
+
 			Write-Host "Queue $qname created"
 		}else 
 		{		
 			Write-Host "$qname already exists"
 		}
 	}
-	
+
 	end { $rqdesc }		
 }
 
@@ -198,7 +198,7 @@ function Get-AzureSbQueueDesc
 		.OUTPUTS
 		Microsoft.ServiceBus.Messaging.QueueDescription
 	#>
-	
+
 	param (
 		[Parameter(Mandatory=$true)]
 		[ValidateNotNullOrEmpty()]
@@ -315,9 +315,9 @@ function Send-AzureSbMessage
 	{
 		$stubBodyObj = ConvertFrom-Json -json $bodyJson -stubObj $stubBodyObj
 	}
-	
+
 	$msg = New-Object Microsoft.ServiceBus.Messaging.BrokeredMessage -ArgumentList $stubBodyObj
-	
+
 	if($msgLabel){$msg.Label = $msgLabel}
 	if($msgId){$msg.MessageId = $msgId}
 	if($replyTo) {$msg.ReplyTo = $replyTo}
@@ -326,7 +326,7 @@ function Send-AzureSbMessage
 	if($to) {$msg.To = $to}
 	if($ttl) {$msg.TimeToLive = $ttl}
 	if($msgProps) {$msg.Properties = $msgProps}
-	
+
 	try {
 		$script:sbQSClient.Send($msg)
 	}catch {
@@ -383,9 +383,9 @@ function Receive-AzureSbMessage
 		$uri = Get-AzureSbUri -cred $cred
 		$script:sbQRClient = [Microsoft.ServiceBus.Messaging.MessagingFactory]::Create($uri, $tp).CreateQueueClient($path, [Microsoft.ServiceBus.Messaging.ReceiveMode]::PeekLock)
 	}
-	
+
 	$msg = $null
-	
+
 	try {
 		$msg = $script:sbQRClient.Receive()				
 	}catch {
@@ -422,8 +422,199 @@ function ConvertFrom-Json
 		[string]$json,		
 		$stubObj
 	)
-	
+
 	$jss = New-Object System.Web.Script.Serialization.JavaScriptSerializer
 	$retObj = $jss.Deserialize($json, $stubObj.GetType())
 	$retObj
+}
+
+function New-AzureSbTopic
+{
+    <#
+    .Synopsis
+    Creates a new Windows Azure Service Bus Topic
+	
+	.Description
+	This cmdlet sets some default values so that you do not need to specify all.
+    
+    .Parameter tpname
+    Topic name
+	
+	.Parameter defTtl
+	Default time to live.  Default: 922337203685 seconds as like in portal.
+	
+	.Parameter duplDetectHisTimeWindow
+	Depulicate detect history time window.  Default: 600 seconds as like in portal.
+	
+	.Parameter batch
+	Enable batch.  Default: false
+		
+	.Parameter maxTpSize
+	Maximum Topic size
+	
+	.Parameter detectDupl
+	Should detect duplicate message
+	
+	
+	.OUTPUTS
+	Microsoft.ServiceBus.Messaging.TopicDescription
+	#>
+
+	param (
+		[Parameter(Mandatory=$true)]
+		[string]$tpname,
+		[TimeSpan]$defTtl = [TimeSpan]::FromSeconds(922337203685),
+		[TimeSpan]$duplDetectHisTimeWindow = [TimeSpan]::FromSeconds(600),
+		[bool]$batch = $false,		
+		[long]$maxTpSize = 1024,
+		[bool]$detectDupl = $true		
+	)
+	begin {	
+		if(!$script:sbCred)
+		{
+			Write-Error "Initialize Service Bus credential using Initialize-AzureSbCredential"
+			return
+		}
+		if(!$script:sbNsmgr) {Get-AzureSbNamespaceManager}
+	}
+
+	process {
+		if(!$script:sbNsmgr.TopicExists($tpname)) 
+		{
+			$tpdesc = New-Object -TypeName Microsoft.ServiceBus.Messaging.TopicDescription -ArgumentList $tpname	
+			$tpdesc.DefaultMessageTimeToLive = $defTtl;$tpdesc.DuplicateDetectionHistoryTimeWindow=$duplDetectHisTimeWindow
+			$tpdesc.EnableBatchedOperations = $batch;             
+			$tpdesc.MaxSizeInMegabytes = $maxTpSize; $tpdesc.RequiresDuplicateDetection=$detectDupl
+
+			$rtpdesc = $script:sbNsmgr.CreateTopic($tpdesc)
+
+			Write-Host "Topic $tpname created"
+		}else 
+		{		
+			Write-Host "$tpname already exists"
+		}
+	}
+
+	end { $rtpdesc }		
+}
+
+function New-AzureSbSubscription
+{
+    <#
+    .Synopsis
+    Creates a new Windows Azure Service Bus Topic
+	
+	.Description
+	This cmdlet sets some default values so that you do not need to specify all.
+    
+    .Parameter tpname
+    Topic name
+    
+    .Parameter sname
+    Subscription name
+	
+	.Parameter defTtl
+	Default time to live.  Default: 922337203685 seconds as like in portal.
+	
+	.Parameter batch
+	Enable batch.  Default: false
+	
+    .Parameter deadLettringOnFilterExpRequired 	
+    Enable DeadLettering On Filter Evaluations Exceptions. Default: true
+    
+    .Parameter deadLettringRequired 	
+    Enable DeadLettering On MessageExpiration. Default: true
+    
+    .Parameter lockDuration
+	Duration of locking.
+        
+    .Parameter maxDelvCount
+	Maximum delivery count
+    	
+	.Parameter sessionRequired
+	Session required
+    
+    .Parameter filterExp
+	SQL Filter Expression
+    
+    .Parameter filterRequired
+    SQL Filter Required
+    
+    .Parameter actionExp
+	SQL Action Expression
+    
+    .Parameter actionRequired
+    SQL Action Required
+    
+	.OUTPUTS
+	Microsoft.ServiceBus.Messaging.SubscriptionDescription
+	#>
+
+	param (
+		[Parameter(Mandatory=$true)]
+		[string]$tpname,
+        [Parameter(Mandatory=$true)]
+        [string]$sname,
+		[TimeSpan]$defTtl = [TimeSpan]::FromSeconds(922337203685),
+        [bool]$batch = $false,
+        [bool]$deadLettringOnFilterExpRequired = $true,
+        [bool]$deadLettringRequired = $true,
+        [TimeSpan]$lockDuration = [TimeSpan]::FromMinutes(5),
+        [int]$maxDelvCount = 3,
+		[bool]$sessionRequired = $false,
+        [string]$filterExp,
+        [bool]$filterRequired = $false,
+        [string]$actionExp,
+        [bool]$actionRequired = $false        
+	)
+	begin {	
+		if(!$script:sbCred)
+		{
+			Write-Error "Initialize Service Bus credential using Initialize-AzureSbCredential"
+			return
+		}
+		if(!$script:sbNsmgr) {Get-AzureSbNamespaceManager}
+	}
+
+	process {
+		if(!$script:sbNsmgr.SubscriptionExists($tpname, $sname)) 
+		{
+            $sdesc = New-Object -TypeName Microsoft.ServiceBus.Messaging.SubscriptionDescription -ArgumentList $tpname, $sname
+            $sdesc.DefaultMessageTimeToLive = $defTtl;
+            $sdesc.EnableBatchedOperations = $batch; 
+            $sdesc.EnableDeadLetteringOnFilterEvaluationExceptions = $deadLettringOnFilterExpRequired
+            $sdesc.EnableDeadLetteringOnMessageExpiration = $deadLettringRequired     
+			$sdesc.LockDuration = $lockDuration
+            $sdesc.MaxDeliveryCount = $maxDelvCount
+            $sdesc.RequiresSession = $sessionRequired			
+        
+            if($filterRequired -eq $true)
+            {
+			    $sqlFilter = New-Object -TypeName Microsoft.ServiceBus.Messaging.SqlFilter -ArgumentList $filterExp
+                
+                if($actionRequired -eq $true)
+                {
+                    $sqlAction = New-Object -TypeName Microsoft.ServiceBus.Messaging.SqlRuleAction -ArgumentList $actionExp
+                    $ruleDesc = New-Object -TypeName Microsoft.ServiceBus.Messaging.RuleDescription -ArgumentList $sqlFilter
+                    $ruleDesc.Action = $sqlAction
+                    $rsdesc = $script:sbNsmgr.CreateSubscription($sdesc, $ruleDesc)
+                }
+                else
+                {
+                    $rsdesc = $script:sbNsmgr.CreateSubscription($sdesc, $sqlFilter)
+                }
+            }
+            else
+            {
+                $rsdesc = $script:sbNsmgr.CreateSubscription($sdesc)
+            }			
+
+			Write-Host "Subscription $sname created"
+		}else 
+		{		
+			Write-Host "$sname already exists"
+		}
+	}
+
+	end { $rsdesc }		
 }
