@@ -325,7 +325,11 @@ function Send-AzureSbMessage
 	if($sessionId) {$msg.SessionId = $sessionId}
 	if($to) {$msg.To = $to}
 	if($ttl) {$msg.TimeToLive = $ttl}
-	if($msgProps) {$msg.Properties = $msgProps}
+	if($msgProps) {		
+		$msgProps.Keys | foreach {
+			$msg.Properties[$_] = $msgProps[$_]
+		}
+	}
 
 	try {
 		$script:sbQSClient.Send($msg)
