@@ -76,6 +76,6 @@ function ContainerSize
 	return $size
 }
 
-$content = DoBlobGetRequest -accountName $aaccountName -accountKey $aaccountKey -containerName "b-1107121510-ab59b106-c664-48a7-ad46-47f247e06287"
+$content = DoBlobGetRequest -accountName "account-name" -accountKey "account-key" -containerName "container-name"
 
-ContainerSize($content)
+Write-Host ContainerSize($content)
