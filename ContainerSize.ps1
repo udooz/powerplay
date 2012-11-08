@@ -1,8 +1,4 @@
-﻿$aurl = "http://techsmithrecovery.blob.core.windows.net/b-1106121155-60bab9df-b1c2-4af9-a67b-463a119e3a6c?restype=container&comp=list&include=snapshots%2Cuncommittedblobs%2Cmetadata&timeout=90"
-$aaccountName = "techsmithrecovery"
-$aaccountKey = "A+OrshMSfR6RDT58SjxmMcO9mIA+wq9jwmz8wvEs/ZXzo2B+gXd9MT09zNNOyDeN4R+2P3Gf8Opk8+speBNwww=="
-
-function GenerateAuthString
+﻿function GenerateAuthString
 {
 	param(
 		 [string]$url
