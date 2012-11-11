@@ -1,17 +1,17 @@
-﻿function GenerateAuthString
+﻿function Generate-AuthString
 {
 	param(
 		 [string]$url
 		,[string]$accountName
 		,[string]$accountKey
-		,[string]$utcTime
+		,[string]$requestUtcTime
 	) 
 	
 		
 	$uri = New-Object System.Uri -ArgumentList $url
 	
 	$authString =   "GET$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)$([char]10)"
-	$authString += "x-ms-date:" + $utcTime + "$([char]10)"
+	$authString += "x-ms-date:" + $requestUtcTime + "$([char]10)"
 	$authString += "x-ms-version:2011-08-18" + "$([char]10)"
 	$authString += "/" + $accountName + $uri.AbsolutePath + "$([char]10)"
 	$authString += "comp:list$([char]10)"
@@ -27,7 +27,7 @@
 	[System.Convert]::ToBase64String($hmac.ComputeHash($dataToMac))
 }
 
-function DoBlobGetRequest
+function Receive-BlobContainerDetails
 {
 	param(		 
 		 [string]$accountName
@@ -35,12 +35,13 @@ function DoBlobGetRequest
 		,[string]$containerName
 	)
 	
+	$details = [System.String]::Empty
 	$resourcePath = $containerName + "?restype=container&comp=list&include=snapshots%2Cuncommittedblobs%2Cmetadata&timeout=90"
 	
 	$url = "http://" + $accountName + ".blob.core.windows.net/" + $resourcePath
 	$timeNow = [System.DateTime]::UtcNow.ToString("R")
 
-	$authHeader = GenerateAuthString -utcTime $timeNow -url $url -accountName $accountName -accountKey $accountKey
+	$authHeader = Generate-AuthString -requestUtcTime $timeNow -url $url -accountName $accountName -accountKey $accountKey
 	
 	[System.Net.HttpWebRequest] $request = [System.Net.WebRequest]::Create($url)
 	$request.Method = "GET"
@@ -51,13 +52,13 @@ function DoBlobGetRequest
 	if($response.StatusCode -eq [System.Net.HttpStatusCode]::OK)
 	{
 		$sreader = New-Object System.IO.StreamReader -ArgumentList $response.GetResponseStream()
-		return $sreader.ReadToEnd()
+		$details = $sreader.ReadToEnd()
 		$sreader.Close()
 	}
-	return ""
+	return $details
 }
 
-function ContainerSize
+function Calculate-ContainerSize
 {
 	param(		 
 		 [string]$xmlContent
@@ -76,6 +77,14 @@ function ContainerSize
 	return $size
 }
 
-$content = DoBlobGetRequest -accountName "account-name" -accountKey "account-key" -containerName "container-name"
+$containerNames = @("a", "b");
+$accountName = "account-name"
+$accountKey = "account-key"
 
-Write-Host ContainerSize($content)
+$totalsize = 0
+
+$containerNames | foreach { 
+	$totalSize += Calculate-ContainerSize -xmlContent (Receive-BlobContainerDetails -accountName $accountName -accountKey $accountKey -containerName $_)
+}
+
+Write-Host $totalsize
