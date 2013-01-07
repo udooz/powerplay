@@ -335,9 +335,8 @@ function Send-AzureSbMessage
 		$script:sbQSClient.Send($msg)
 	}catch {
 		Write-Error $Error[0]
-	}finally {
-		return $msg
 	}
+    return $msg
 }
 
 $script:sbQRClient = $null
@@ -402,10 +401,10 @@ function Receive-AzureSbMessage
 			{
 				$mi = $msg.GetType().GetMethods() | Where {$_.Name -like 'GetBody' -and ($_.GetParameters().Length -eq 0)} | Select
 				$body = $mi.MakeGenericMethod($stubBodyObj.GetType()).Invoke($msg, $null)
-			}
-			return @{msg=$msg;body=$body}
+			}			
 		}
 	}
+    return @{msg=$msg;body=$body}
 }
 
 function Clear-AzureSbObjects
